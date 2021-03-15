@@ -30,6 +30,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var scoreLabelNode:SKLabelNode!
         var bestScoreLabelNode:SKLabelNode!
     let userDefaults:UserDefaults = UserDefaults.standard
+    
+    //アイテムスコア
+    var itemScore = 0
+    var itemscoreLabelNode:SKLabelNode!
+   
+    
+    
           // SKView上にシーンが表示されたときに呼ばれるメソッド
         
     override func didMove(to view: SKView) {
@@ -54,6 +61,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             setupBird()
             setupItem()
             
+        setupItemScoreLabel()
             setupScoreLabel()
           }
             func setupGround() {
@@ -331,7 +339,7 @@ func setupBird() {
  
     // SKPhysicsContactDelegateのメソッド。衝突したときに呼ばれる
        func didBegin(_ contact: SKPhysicsContact) {
-        
+
         
            // ゲームオーバーのときは何もしない
        if scrollNode.speed <= 0 {
@@ -342,7 +350,9 @@ func setupBird() {
             if  contact.bodyA.categoryBitMask & itemCategory == itemCategory {
                 print("ScoreUP")
             score += 1
+                itemScore += 1
                 scoreLabelNode.text = "Score\(score)"
+                itemscoreLabelNode.text = "ItemScore\(itemScore)"
                 contact.bodyA.node?.removeFromParent()
                 run(sound)
               
@@ -385,6 +395,8 @@ func setupBird() {
             score = 0
         scoreLabelNode.text = "Score:\(score)"
 
+        itemScore = 0
+        itemscoreLabelNode.text = "ItemScore\(itemScore)"
             bird.position = CGPoint(x: self.frame.size.width * 0.2, y:self.frame.size.height * 0.7)
             bird.physicsBody?.velocity = CGVector.zero
             bird.physicsBody?.collisionBitMask = groundCategory | wallCategory
@@ -415,6 +427,18 @@ func setupBird() {
             bestScoreLabelNode.text = "Best Score:\(bestScore)"
             self.addChild(bestScoreLabelNode)
         }
+    
+    func setupItemScoreLabel(){
+        itemScore = 0
+        itemscoreLabelNode = SKLabelNode()
+        itemscoreLabelNode.fontColor = UIColor.black
+        itemscoreLabelNode.position = CGPoint(x: 150, y: self.frame.size.height - 60)
+        
+        itemscoreLabelNode.zPosition = 100
+        itemscoreLabelNode.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.left
+        itemscoreLabelNode.text = "ItemScore\(itemScore)"
+        self.addChild(itemscoreLabelNode)
+    }
 }
     /*
     // MARK: - Navigation
